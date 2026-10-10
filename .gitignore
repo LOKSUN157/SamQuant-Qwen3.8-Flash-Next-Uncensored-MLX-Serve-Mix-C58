@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+# Model weights (never commit weights to GitHub)
+*.safetensors
+*.bin
+*.gguf
+*.pt
+*.pth
+*.ckpt
+
+# Local download directories
+models/
+downloads/
+checkpoints/
+
+# Logs
+*.log
