@@ -22,3 +22,5 @@ checkpoints/
 
 # Logs
 *.log
+__pycache__/
+*.pyc
