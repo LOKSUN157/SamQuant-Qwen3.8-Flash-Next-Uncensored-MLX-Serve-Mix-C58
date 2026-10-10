@@ -159,7 +159,7 @@ mlx-serve --model <this-pack-dir> --serve --host 127.0.0.1 --port 8093 --metrics
 
 ---
 
-## Status and exposure
+## Status and exposure (as of 2026-10-10)
 
 | Platform | Metric | Value |
 |---|---|---|
