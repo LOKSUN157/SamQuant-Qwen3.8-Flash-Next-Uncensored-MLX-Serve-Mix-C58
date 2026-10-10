@@ -43,13 +43,13 @@ def download_repo(repo_id: str, local_dir: str) -> dict:
     downloaded = {}
     for i, repo_file in enumerate(files, 1):
         print(f"[{i}/{len(files)}] Downloading {repo_file.path} ...")
+        # 注：local_dir_use_symlinks / resume_download 已在 huggingface_hub 1.x 移除
+        # （1.x 默认即拷贝到 local_dir 并支持断点续传）；保留会抛 TypeError。
         local_path = hf_hub_download(
             repo_id=repo_id,
             filename=repo_file.path,
             repo_type="model",
             local_dir=local_dir,
-            local_dir_use_symlinks=False,
-            resume_download=True,
         )
         downloaded[repo_file.path] = local_path
     return downloaded
@@ -75,8 +75,13 @@ def verify_download(repo_id: str, local_dir: str, downloaded: dict) -> bool:
             continue
 
         # SHA-256 for the largest file and a few sampled shards; size-only for the rest.
+        # huggingface_hub 1.x: 远端 SHA-256 直接来自 list_repo_tree 对象的 lfs.sha256（file_metadata 已移除）。
+        lfs = getattr(repo_file, "lfs", None)
+        remote_sha = getattr(lfs, "sha256", None) if lfs else None
         if rel_path in ("ngram_table.bin", "model-00001.safetensors", "model-00050.safetensors"):
-            remote_sha = api.file_metadata(repo_file.path, repo_id=repo_id, repo_type="model").lfs.sha256
+            if not remote_sha:
+                print(f"WARN: 远端无 lfs.sha256，跳过 SHA 校验 {rel_path}（仅按大小核对）")
+                continue
             local_sha = sha256_file(local_path)
             if local_sha != remote_sha:
                 print(f"SHA-256 MISMATCH: {rel_path}")

@@ -65,7 +65,12 @@ def main():
             continue
 
         if rel_path in args.sha_samples:
-            remote_sha = api.file_metadata(rel_path, repo_id=args.repo_id, repo_type="model").lfs.sha256
+            # huggingface_hub 1.x: lfs.sha256 直接挂在 list_repo_tree 对象上（file_metadata 已移除）。
+            lfs = getattr(repo_file, "lfs", None)
+            remote_sha = getattr(lfs, "sha256", None) if lfs else None
+            if not remote_sha:
+                print(f"  WARN: 远端无 lfs.sha256，跳过 SHA 校验: {rel_path}（仅按大小核对）")
+                continue
             local_sha = sha256_file(local_path)
             if local_sha != remote_sha:
                 sha_mismatches.append(rel_path)
