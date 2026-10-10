@@ -139,6 +139,18 @@ All numbers below are real production/verification readings from a single Apple 
 - decode p50 **36.9 tok/s** (p10 26.2 / p90 52.6); largest single turn reached **421,473 tokens** of context
 - engine-resident footprint after load (phys_footprint): **~61 GB**
 
+**Live snapshots** (2026-10-10 12:31, while this pack was powering the author's WeChat-article sessions):
+
+![Engine live metrics dashboard](images/live-metrics-20261010.png)
+
+Instantaneous readings: decode 34.1 tok/s (inside the p10-p90 band above), cache hit 98% (1214/1242 queries), GPU 96%. Note the MEMORY tile: 86,758 MB is the *current* footprint with ~283K tokens of context loaded by the running session — residency grows with context; right after load it is ~61 GB. Plenty of headroom on a 128 GB machine.
+
+![Host session cockpit](images/session-cockpit-20261010.png)
+
+Same moment in the host app: a 16m59s deep-research task running, context 283K/524K (54%), session decode 31 tok/s, 70.7M tokens at 98% cache hit.
+
+(images/ holds illustration screenshots, not model files; verify model integrity against the 101 files referenced by model.safetensors.index.json + ngram_table.bin.)
+
 **Dedicated long-context window** (2026-09-30, 524K ctx, 57 rounds with >30K-token prompts): decode p50 **46.0 tok/s**. On the same night the author's lighter same-series pack B55 (52.4 GB weights, 3-bit experts) ran p50 **37.0 tok/s** — C58 is ~8 GB heavier yet faster, because its 4-bit experts land in the engine's fused-kernel fast path while 3-bit experts do not.
 
 **Offline quality** (600 held-out scoring positions, top-1 agreement vs the BF16 reference; scoring prefixes 65–2,297 tokens): C58 **85.40%**; community 4-bit pack 87.82% (−2.42); same-budget all-4-bit pack 85.76% (+0.36).
