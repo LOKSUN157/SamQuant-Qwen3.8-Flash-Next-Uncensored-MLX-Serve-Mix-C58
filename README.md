@@ -16,6 +16,13 @@ The Hugging Face repository contains the full quantized weights (~90 GB). This G
 
 ---
 
+## 📖 WeChat article (Chinese, the original "free pack" write-up)
+
+Desktop: click **[https://mp.weixin.qq.com/s/G1h72LdFwRLdaP6W7yIIYg](https://mp.weixin.qq.com/s/G1h72LdFwRLdaP6W7yIIYg)**.
+Mobile: scan the QR code.
+
+![WeChat article QR](images/wechat-article-qr.png)
+
 ## What is this?
 
 A mixed-precision `mlx-serve` pack of the uncensored Qwen3.8-Flash-Next model (180B-class MoE: 125B backbone + 51B n-gram table + 4B MTP head), built for Apple Silicon with 128 GB unified memory. The uncensored property is inherited from the `orcarouter` source weights; this pack makes no behavior modifications.
